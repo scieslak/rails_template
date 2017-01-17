@@ -1,0 +1,17 @@
+language: ruby
+rvm:
+  - 2.3.3
+
+script:
+    - bundle exec rake db:create
+    - bundle exec rake db:migrate
+    - bundle exec rails test
+
+services:
+  - postgresql
+
+addons:
+  - postgresql: "9.5"
+env:
+global:
+  - COVERAGE=true

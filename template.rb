@@ -1,16 +1,34 @@
-# template.rb
+# RAILS_TEMPLATE
+# This is Ruby on Rails application template
 
-  run "curl -OL https://gist.githubusercontent.com/scieslak/1292fb60b43bcc9b9bd3b8fe4f3e2c5c/raw/Gemfile"
+# USAGE
+# To initialize new app with rails_template run:
+#
+#   rails new <app_name> -d postgresql --skip-bundle -m <template_location>
 
-  run "curl -OL https://gist.githubusercontent.com/scieslak/1292fb60b43bcc9b9bd3b8fe4f3e2c5c/raw/.travis.yml"
 
-  # run "bundle && bundle outdated"
+# -------------------- GEMS ---------------------------------------------
+# Copy prebuild Gemfile form template_files
+run "cp #{File.dirname(path)}/template_files/Gemfile ."
 
-  run "mv config/database.yml config/database.example"
+## Run "bundle" after overriding default Gemfile
+# run "bundle"
 
-  append_file '.gitignore', "\n# Ignore database configuration.\nconfig/database.yml"
+## Run "bundle outdated" to verify gems are up to date
+# run "bundle outdated"
 
-  create_file 'config/database.yml', <<-FILE
+
+# -------------------- DATABESE -----------------------------------------
+## To avoid security issues "database.yml" needs to be hidden
+## from the remote repository by adding the file name to .gitignore.
+append_file '.gitignore', "\n# Ignore database configuration.\nconfig/database.yml"
+
+## Rename the original "database.yml" file to "database.example"
+## to leave as a reference for anyone viewing the repository.
+run "mv config/database.yml config/database.example"
+
+## Create new "database.yml" with valid database credentilas.
+create_file 'config/database.yml', <<-FILE
 <% app_name = "#{app_name}" %>
 default: &default
   adapter: postgresql
@@ -32,25 +50,44 @@ production:
   database: "<%= app_name + '_production' %>"
   FILE
 
-  rails_command "db:create"
+# Create new database
+rails_command "db:create"
 
-  run "guard init minitest"
 
-  run "curl -OL https://gist.githubusercontent.com/scieslak/1292fb60b43bcc9b9bd3b8fe4f3e2c5c/raw/Guardfile"
+# -------------------- TEST ---------------------------------------------
+## Initiate Guard
+run "guard init minitest"
 
-  run "curl -o test/test_helper.rb -OL https://gist.githubusercontent.com/scieslak/1292fb60b43bcc9b9bd3b8fe4f3e2c5c/raw/test_helper.rb"
+## Replace the original "Guardfile"
+run "cp #{File.dirname(path)}/template_files/Guardfile ."
 
-  run "curl -o vendor/assets/stylesheets/normalize.css -OL https://necolas.github.io/normalize.css/5.0.0/normalize.css"
+## Replace the original "test_helper.rb"
+run "cp #{File.dirname(path)}/template_files/test_helper.rb ./test/test_helper.rb"
 
-  inject_into_file "app/assets/stylesheets/application.css", " *= require normalize\n", before: ' *= require_tree .'
+## Add SimpleCov coverage report to "Gitignore".
+append_file '.gitignore', "\n\n# Ignore code coverage report.\n/coverage/*"
 
-  append_file '.gitignore', "\n\n# Ignore code coverage report.\n/coverage/*"
+## Copy prebuild .travis.yml form template_files
+run "cp #{File.dirname(path)}/template_files/.travis.yml ."
 
-  # run 'rvm --ruby-version use 2.3.3@r233ror501'
-  # run 'echo "\n# Ignore RVM configuration.\n.ruby*" >> .gitignore'
 
-  git :init
-  git add: '-A'
-  git commit: "-m 'Initial commit'"
+# -------------------- CSS ----------------------------------------------
+## Download "normalize.css" to the vendor stylesheets
+run "curl -o vendor/assets/stylesheets/normalize.css -OL https://necolas.github.io/normalize.css/5.0.0/normalize.css"
 
-  run "atom ."
+## Add "*= require normalize" to "application.css"
+inject_into_file "app/assets/stylesheets/application.css", " *= require normalize\n", before: ' *= require_tree .'
+
+# -------------------- RVM ----------------------------------------------
+
+## Create RVM configuration files.
+# run 'rvm --ruby-version use 2.3.3@r233ror501'
+# run 'echo "\n# Ignore RVM configuration.\n.ruby*" >> .gitignore'
+
+# -------------------- GIT ----------------------------------------------
+git :init
+git add: '-A'
+git commit: "-m 'Initial commit'"
+
+# -------------------- EDITOR
+run "atom ."
