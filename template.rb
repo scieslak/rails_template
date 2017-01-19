@@ -90,4 +90,7 @@ git add: '-A'
 git commit: "-m 'Initial commit'"
 
 # -------------------- EDITOR
-run "atom ."
+# run "atom ."
+
+# -------------------- Capistrano
+run "cap install"
