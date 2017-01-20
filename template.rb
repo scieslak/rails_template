@@ -18,6 +18,11 @@ run "cp #{File.dirname(path)}/template_files/Gemfile ."
 # run "bundle outdated"
 
 
+# -------------------- SECRETS ------------------------------------------
+run "cp ./config/secrets.yml ./config/secrets.example"
+append_file '.gitignore', "\n# Ignore secrets.\nconfig/secrets.yml"
+
+
 # -------------------- DATABESE -----------------------------------------
 ## To avoid security issues "database.yml" needs to be hidden
 ## from the remote repository by adding the file name to .gitignore.
@@ -51,7 +56,7 @@ production:
   FILE
 
 # Create new database
-rails_command "db:create"
+#rails_command "db:create"
 
 
 # -------------------- TEST ---------------------------------------------
@@ -70,6 +75,9 @@ append_file '.gitignore', "\n\n# Ignore code coverage report.\n/coverage/*"
 ## Copy prebuild .travis.yml form template_files
 run "cp #{File.dirname(path)}/template_files/.travis.yml ."
 
+## Copy prebuild database.yml.travis form template_files
+run "cp #{File.dirname(path)}/template_files/database.yml.travis ./config/"
+
 
 # -------------------- CSS ----------------------------------------------
 ## Download "normalize.css" to the vendor stylesheets
@@ -84,13 +92,25 @@ inject_into_file "app/assets/stylesheets/application.css", " *= require normaliz
 # run 'rvm --ruby-version use 2.3.3@r233ror501'
 # run 'echo "\n# Ignore RVM configuration.\n.ruby*" >> .gitignore'
 
-# -------------------- GIT ----------------------------------------------
-git :init
-git add: '-A'
-git commit: "-m 'Initial commit'"
 
 # -------------------- EDITOR
 # run "atom ."
 
-# -------------------- Capistrano
-run "cap install"
+# -------------------- CAPISTRANO
+# run "cap install"
+## Add deploy files to "Gitignore".
+append_file '.gitignore', "\n\n# Ignore Capistrano files.\nCapfile\n/config/deploy\n/config/deploy.rb"
+
+
+# -------------------- GITHUB
+gh_username = "scieslak"
+gh_token = ENV['GITHUB_TOKEN']
+run "curl -u \"#{gh_username}:#{gh_token}\" https://api.github.com/user/repos -d '{\"name\":\"#{app_name}\"'"
+
+
+# -------------------- GIT ----------------------------------------------
+git :init
+git add: '-A'
+git commit: "-m 'Initial commit'"
+git remote: "add origin git@github.com:#{gh_username}/#{app_name}.git"
+git push: "-u origin master"

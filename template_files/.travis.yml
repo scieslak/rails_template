@@ -1,17 +1,19 @@
+dist: trusty
+sudo: required
 language: ruby
 rvm:
-  - 2.3.3
-
-script:
-    - bundle exec rake db:create
-    - bundle exec rake db:migrate
-    - bundle exec rails test
-
+- 2.3.3
 services:
-  - postgresql
-
+- postgresql
 addons:
-  - postgresql: "9.5"
+  postgresql: "9.6"
+before_script:
+- psql -c 'create database travis_ci_test;' -U postgres
+- cp config/database.yml.travis config/database.yml
+script:
+- bundle exec rails test
+after_script:
+- bundle exec codeclimate-test-reporter
 env:
-global:
+  global:
   - COVERAGE=true
