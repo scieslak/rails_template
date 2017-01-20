@@ -1,8 +1,8 @@
 # config valid only for current version of Capistrano
 lock "3.7.1"
 
-set :application, 'scieslak'
-set :repo_url, 'git@github.com:scieslak/scieslak.git'
+set :application, 'ghtest'
+set :repo_url, 'git@github.com:scieslak/ghtest.git'
 
 set :user, "admin-sc"
 set :server_ip, "52.213.177.208"
@@ -20,6 +20,7 @@ set :rvm_ruby_version, '2.3.3@rails5.0.0.1'
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 set :linked_files, fetch(:linked_files, []).push('config/secrets.yml', 'config/database.yml')
 
+before "deploy:check:linked:files", "prepare:copy"
 after "deploy", "puma:nginx_config"
 after "puma:nginx_config", "puma:config"
 

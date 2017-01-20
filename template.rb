@@ -97,10 +97,14 @@ inject_into_file "app/assets/stylesheets/application.css", " *= require normaliz
 # run "atom ."
 
 # -------------------- CAPISTRANO
-# run "cap install"
+run "cap install"
 ## Add deploy files to "Gitignore".
 append_file '.gitignore', "\n\n# Ignore Capistrano files.\nCapfile\n/config/deploy\n/config/deploy.rb"
 
+run "cp #{File.dirname(path)}/template_files/Capfile ."
+run "cp #{File.dirname(path)}/template_files/production.rb ./config/deploy/"
+run "cp #{File.dirname(path)}/template_files/deploy.rb ./config/"
+run "cp #{File.dirname(path)}/template_files/prepare.rake ./lib/capistrano/tasks/"
 
 # -------------------- GITHUB
 gh_username = "scieslak"

@@ -17,7 +17,6 @@ gem 'bcrypt',                       '3.1.11'
 
 group :development, :test do
   gem 'byebug', platform: :mri
-  gem 'capistrano-rails'
 end
 
 group :development do
@@ -25,6 +24,11 @@ group :development do
   gem 'listen',                     '3.1.5'
   gem 'spring',                     '2.0.0'
   gem 'spring-watcher-listen',      '2.0.1'
+  gem 'capistrano-rails'
+  gem 'capistrano3-puma'
+  gem 'capistrano-rvm'
+  gem 'capistrano-rails-console', require: false
+  gem 'capistrano-bundler'
 end
 
 group :test do
